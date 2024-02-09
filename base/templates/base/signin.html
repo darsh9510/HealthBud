@@ -1,0 +1,19 @@
+{%if page == 'signin'%}
+<div>
+    <form method="POST" action="">
+        {%csrf_token%}
+        <label>Username:</label>
+        <input type="text" name="username" placeholder="Enter Username"/>
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter Username"/>
+        <input type="submit" value="Login"/>
+    </form>
+    <p>havent signed up yet?</p>
+    <a href = "{%url 'signup' %}">Sign up</a>
+</div>
+{%else%}
+<div>
+    {{form.as_p}}
+</div>
+
+{%endif%}
