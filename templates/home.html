@@ -4,6 +4,10 @@
         <input type="text" name = "q" placeholder="Search .."> 
     </form>
 </div>
+<a href="{% url 'logout' %}">logout</a>
+<a href="{% url 'signin' %}">signin</a>
+<a href="{%url 'resetpasswd'%}">reset passwd</a>
+<a href="{%url 'sign_as_doctor'%}">sign_as_docor</a>
 <div>
     <div>
         <div>
@@ -22,7 +26,10 @@
         </div>
         {% endfor %}
     </div>
+
+{%if user.doctor %}
     <div>
         <a href="{%url 'createRoom'%}">Create Room</a> 
     </div>
+{%endif%}
 </div>

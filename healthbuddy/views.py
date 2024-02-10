@@ -6,16 +6,77 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages 
 # Create your views here.
-from .models import Rooms, Disease, Massage
+from .models import Rooms, Disease, Massage,Doctor
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from .forms import RoomForm
+import requests
 
+# Define the base URL
+URL = "https://ap-south-1.aws.neurelo.com/"
+base_url = URL + "custom/auth"
+
+# Set the query parameters
+query_params = {
+    "doctor_name": "",
+    "registration_no": "",
+    "registration_year": "",
+    "state_medical_council": "\\"
+}
+
+# Define the headers
+headers = {
+    "X-API-KEY": "neurelo_9wKFBp874Z5xFw6ZCfvhXUBh9Hd4NW9ZwiLJ7tCsik3n3sDPi8tNL1xbmK4rsM539IXn6dRbBr6dZ8rJuWLIQLUP4vx349mJYHvEB4FCBAoD7WIvBt6MkzUEB/cbpfJkS2OypqIq9h3yaMIeJPTr5eSA4/eGjFoLJtkBt2gtyG22h96Fgg/Kil97x4vyvXqH_x9Ond+P7bK85/+ElhF4/vc9pzj18mx9aPM9/32SuEUc="
+}
+
+# Make the GET request
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     room = Rooms.objects.filter(Q(name__icontains=q)|Q(disease__name__icontains=q))
     context = {'room':room,'count':room.count(),'q':q}
     return render(request, 'home.html', context)
+
+def signin_as_d(request):
+    if request.method == 'POST':
+        doctor_name = request.POST['doctor_name']
+        registration_no = request.POST['registration_no']
+        registration_year = request.POST['registration_year']
+        state_medical_council = request.POST['state_medical_council']
+        password = request.POST['password']
+        disease_m = request.POST['disease']
+
+        u_exist = User.objects.filter(username=doctor_name).exists()
+        if u_exist:
+            messages.info(request, 'User already exists')
+            return redirect('sign_as_doctor')
+
+
+
+        query_params["doctor_name"] = doctor_name
+        query_params["registration_no"] = registration_no
+        query_params["registration_year"] = registration_year
+        query_params["state_medical_council"] = state_medical_council
+        
+        response = requests.get(base_url, params=query_params, headers=headers)
+
+    # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            # Print the response content
+            exists = Disease.objects.filter(name=disease_m).exists()
+            if exists:
+                disease_m_obj = Disease.objects.get(name=disease_m)
+            else:
+                disease_m_obj = Disease.objects.create(name=disease_m)
+            user = User.objects.create_user(doctor_name, password=password)
+            user.save()
+            doctor = Doctor.objects.create(doctor = user,registration_no= registration_no,registration_year = registration_year,state_medical_council = state_medical_council,disease = disease_m_obj)
+            print(response.text)
+        else:
+            # Print an error message
+            print("Error:", response.status_code)
+        return redirect('signin')
+    return render(request, 'signin_as_d.html')
+
 
 def signin(request):
     page = 'signin'
@@ -68,7 +129,7 @@ def room(request, pk):
     return render(request, 'room.html', context)
 
 
-
+@login_required(login_url='signin')
 def createRoom(request):
     form = RoomForm()
     if request.method == 'POST':
@@ -87,6 +148,8 @@ def createRoom(request):
     context = {'form':form}
     return render(request, 'c_room.html',context)
 
+
+@login_required(login_url='signin')
 def deleteRoom(request, pk):
     room = Rooms.objects.get(id=pk)
     if request.method == 'POST':
@@ -96,6 +159,7 @@ def deleteRoom(request, pk):
         return redirect('home')
     return render(request, 'delete.html', {'obj':room})
 
+@login_required(login_url='signin')
 def deleteMessage(request, pk):
     message = Massage.objects.get(id=pk)
     room = Rooms.objects.get(id=message.room.id)
@@ -106,3 +170,22 @@ def deleteMessage(request, pk):
         return redirect('room',pk = room.id)
     return render(request, 'delete.html', {'obj':message})
 
+@login_required(login_url='signin')
+def resetpasswd(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        users = User.objects.get(username=username)
+        if users.id is not request.user.id:
+            return HttpResponse('You are not allowed here')
+        users.set_password(password)
+        users.save()
+        return redirect('signin')
+    context = {}
+    return render(request, 'resetpasswd.html')
+    return render(request, 'resetpasswd.html')
+
+@login_required(login_url='signin')
+def logout_u(request):
+    logout(request)
+    return redirect('home')

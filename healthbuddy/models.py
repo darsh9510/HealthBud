@@ -16,6 +16,13 @@ class Disease(models.Model):
         ordering = ['name']
 
 
+class Doctor(models.Model):
+    doctor = models.OneToOneField(User, on_delete=models.CASCADE)
+    registration_no = models.CharField(max_length=100)
+    registration_year = models.IntegerField()
+    state_medical_council = models.CharField(max_length=100)
+    disease = models.ForeignKey(Disease, on_delete=models.SET_NULL, null=True)
+
 class Rooms(models.Model):
     name = models.CharField(max_length=100)
     host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
