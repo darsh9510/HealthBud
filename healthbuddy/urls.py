@@ -12,5 +12,5 @@ urlpatterns = [
     path('logout', views.logout_u, name='logout'),
     path('resetpasswd', views.resetpasswd, name='resetpasswd'),
     path('sign_as_doctor',views.signin_as_d,name='sign_as_doctor'),
-
+    path('recommendation', views.recom, name='recommendation'),
 ]
