@@ -1,0 +1,16 @@
+<div> 
+    <div>
+        {% csrf_token %}
+        <form  method="post" action="">
+            {% csrf_token %}
+            {% for que in ques %}
+            <h3>{{ que.0 }} -- {{ que.1 }}</h3>
+            <input type="radio" id="true_{{ que.0 }}" name="{{ que.0 }}" value="True">
+            <label for="true_{{ que.0 }}">True</label><br>
+            <input type="radio" id="false_{{ que.0 }}" name="{{ que.0 }}" value="False">
+            <label for="false_{{ que.0 }}">False</label><br>
+            {% endfor %}
+            <input type="submit" value="Next">
+        </form>
+    </div>
+</div>
