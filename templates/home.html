@@ -1,38 +1,148 @@
-<h1> Main Page</h1>
-<div>
-    <form method="GET" action="{%url 'home'%}">
-        <input type="text" name = "q" placeholder="Search .."> 
-    </form>
-</div>
-<a href="{% url 'logout' %}">logout</a>
-<a href="{% url 'signin' %}">signin</a>
-<a href="{%url 'resetpasswd'%}">reset passwd</a>
-<a href="{%url 'sign_as_doctor'%}">sign_as_docor</a>
-<div>
-    <div>
-        <div>
-            {{q}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthBuddy Homepage</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            /* background-image: url('assets/img/yuriy-kovalev-nN1HSDtKdlw-unsplash.jpg'); */
+            background-size: cover;
+            background-color: cornsilk;
+            background-repeat: no-repeat;
+            background-position: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Styling for the navigation bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            background-color: rgb(38, 111, 175);
+            padding: 10px;
+            margin-bottom: 20px;
+            animation: slideDown 1s ease-in-out; /* Add slide-down animation */
+        }
+
+        /* Styling for the user name */
+        .usern {
+            color: white;
+            font-family: cursive;
+        }
+
+        /* Styling for the search input */
+        .search {
+            border-radius: 40px;
+            color: black;
+            padding: 8px 16px;
+            border: none;
+            outline: none;
+        }
+
+        /* Styling for the feature buttons */
+        .features {
+            padding: 8px 16px;
+            background-color: rgb(38, 111, 175);
+            color: white;
+            border-radius: 40px;
+            text-decoration: none;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Hover effect on features link */
+        .features:hover {
+            transform: scale(1.1);
+        }
+
+        /* Styling for the main content container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Styling for the chatrooms grid */
+        .chatrooms {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Styling for the chatroom cards */
+        .chatroom {
+            background-color:  rgba(0, 67, 126, 0.145);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            font-family:Georgia, 'Times New Roman', Times, serif;
+            color: #333;
+            text-align: center;
+        }
+
+        /* Hover effect on chatrooms */
+        .chatroom:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Animation keyframes */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="flex items-center">
+            <span class="text-lg font-bold font usern">{{request.user}}</span>
         </div>
-        <div>
-            {{count}}
-        </div>
-        {% for room in room %}
-        <div>
+        <div class="flex items-center">
+        <form method="GET" action="{%url 'home'%}">
             {%csrf_token%}
-            <h5>
-                {{room.id}} -- {{room.name}}
-            </h5>
-            <a href="{%url 'room' room.id%}">room</a>
+            <input type="text" name = "q" placeholder="Search" class="search"> 
+        </form>
+            <a href="" class="px-4 py-2 bg-blue-500 text-white rounded-lg features">Home</a>
+            <a href="{%url 'createRoom'%}" class="px-4 py-2 bg-blue-500 text-white rounded-lg features">Create Room</a>
+            <a href="{%url 'logout'%}" class="px-4 py-2 bg-red-500 text-white rounded-lg">Signout</a>
         </div>
-        {% endfor %}
     </div>
 
-{%if user.doctor %}
-    <div>
-        <a href="{%url 'createRoom'%}">Create Room</a> 
+    <!-- Main Content -->
+    <div class="container mx-auto mt-8">
+        <div class="chatrooms">
+            <!-- Joined Chatrooms Box -->
+            <div class="chatroom">
+                {%csrf_token%}
+                <h2 class="text-xl font-bold mb-4">Top Chatrooms</h2>
+                <!-- Add your content here -->
+                {%for i in room%}
+                    <div class="chatroom"><a href="{%url 'room' i.id%}">{{i.name}} {{i.id}} </a> </div>
+                {%endfor%}
+            </div>
+
+            <!-- Top Chatrooms Box -->
+            <div class="chatroom">
+                {%csrf_token%}
+                <h2 class="text-xl font-bold mb-4">Joined Chatrooms</h2>
+                <!-- Add your content here -->
+
+                {%for room in room_u%}
+                    <div class="chatroom"><a href="{%url 'room' room.id%}">{{room.name}} {{room.id}} </a></div>
+                {%endfor%}
+            </div>
+        </div>
     </div>
-{%endif%}
-    <div>
-        <a href = "{%url 'question'%}">Quiz</a>
-    </div>
-</div>
+</body>
+
+</html>

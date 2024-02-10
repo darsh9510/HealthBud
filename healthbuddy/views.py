@@ -34,7 +34,9 @@ headers = {
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     room = Rooms.objects.filter(Q(name__icontains=q)|Q(disease__name__icontains=q))
-    context = {'room':room,'count':room.count(),'q':q}
+    room_u = Rooms.objects.filter(host=request.user.id)
+    context = {'room':room,'count':room.count(),'q':q,'room_u':room_u}
+
     return render(request, 'home.html', context)
 
 def signin_as_d(request):
@@ -111,8 +113,9 @@ def signup(request):
 def room(request, pk):
     room = Rooms.objects.get(id=pk)
     user = User.objects.all()
+    room_u = Rooms.objects.filter(host=request.user.id)
     messages = Massage.objects.filter(room=room)
-    context = {'room': room, 'messages': messages,'a_user':user}
+    context = {'room': room, 'messages': messages,'a_user':user,'room_u':room_u}
 
     if request.method == 'POST':
         if 'participant_username' in request.POST:
