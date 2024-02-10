@@ -1,0 +1,37 @@
+<div>
+    <div>{{room.name}}</div>
+    <div>{{room.disease}}</div>
+    <div>{{room.host}}</div>
+    {%for i in messages%}
+    <div>   
+    {%if request.user == room.host%}
+    <a href="{%url 'deletemsg' i.id%}">Delete</a>
+    {%endif%}
+    </div>
+        <div>
+            {{i}}
+        </div>
+    {%endfor%}
+    <div>
+        {{room.participent.count}}
+    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="participant_username">Add Participant:</label>
+        <select id="participant_username" name="participant_username">
+            {% for user in a_user %}
+                <option value="{{ user.username }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Add</button>
+    </form>
+    {%if request.user.is_authenticated%}
+    <form method="POST" action="">
+    {%csrf_token%}
+    <input type="text" name="message" placeholder="write a message" />
+    </form>
+    {%if request.user == room.host%}
+    <a href="{%url 'delete' room.id%}">Delete</a>
+    {%endif%}
+    {%endif%}
+</div>

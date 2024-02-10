@@ -1,0 +1,28 @@
+<h1> Main Page</h1>
+<div>
+    <form method="GET" action="{%url 'home'%}">
+        <input type="text" name = "q" placeholder="Search .."> 
+    </form>
+</div>
+<div>
+    <div>
+        <div>
+            {{q}}
+        </div>
+        <div>
+            {{count}}
+        </div>
+        {% for room in room %}
+        <div>
+            {%csrf_token%}
+            <h5>
+                {{room.id}} -- {{room.name}}
+            </h5>
+            <a href="{%url 'room' room.id%}">room</a>
+        </div>
+        {% endfor %}
+    </div>
+    <div>
+        <a href="{%url 'createRoom'%}">Create Room</a> 
+    </div>
+</div>
