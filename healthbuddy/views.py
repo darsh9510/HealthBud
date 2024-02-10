@@ -273,8 +273,10 @@ ques = [
     [80, 'blister'],
 ]
 
-
-#print(ques[::][0])
+Responses = [
+]
+for i in ques:
+    Responses.append(False)
 
 def quest(request):
     Response = []
@@ -287,5 +289,7 @@ def quest(request):
                 Response.append(True)
             else:
                 Response.append(False)
+        for i in range(80):
+            Responses[i] = Response[i]
         return redirect('home')
     return render(request, 'question.html',context)
