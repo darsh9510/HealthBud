@@ -11,7 +11,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from .forms import RoomForm
 import requests
-
+import dill
+import numpy as np
 # Define the base URL
 URL = "https://ap-south-1.aws.neurelo.com/"
 base_url = URL + "custom/auth"
@@ -272,16 +273,29 @@ ques = [
     [79, 'scurring'],
     [80, 'blister'],
 ]
+ds=['Fungal infection', 'Allergy', 'GERD', 'Chronic cholestasis', 'Drug Reaction', 'Peptic ulcer disease', 'AIDS', 'Diabetes', 'Gastroenteritis', 'Bronchial Asthma', 'Hypertension', 'Migraine', 'Cervical spondylosis', 'Paralysis (brain hemorrhage)', 'Jaundice', 'Malaria', 'Chicken pox', 'Dengue', 'Typhoid', 'Hepatitis A', 'Hepatitis B', 'Hepatitis C', 'Hepatitis D', 'Hepatitis E', 'Alcoholic hepatitis', 'Tuberculosis', 'Common Cold', 'Pneumonia', 'Dimorphic hemorrhoids (piles)', 'Heart attack', 'Varicose veins', 'Hypothyroidism', 'Hyperthyroidism', 'Hypoglycemia', 'Osteoarthritis', 'Arthritis', '(vertigo) Paroxysmal Positional Vertigo', 'Acne', 'Urinary tract infection', 'Psoriasis', 'Impetigo']
 
-Responses = [
-]
-for i in ques:
-    Responses.append(False)
-
+global_probs = [None]
+global_tops=[None]
+#print(ques[::][0])
+Response = []
 def quest(request):
-    Response = []
+    global global_probs
+    global global_tops
+    def predictions():
+        res=np.asarray(Response).reshape(1,80)
+        print(res)
+        with open('//home/phinex/Desktop/HealthBud/healthbuddy/mlh.pkl','rb') as f:
+            pipe=dill.load(f)
+        y_pred=pipe.predict(res)
+        print(y_pred)
+        top_labels=np.argsort(y_pred,axis=1)[:,-4:]
+        probs=np.sort(y_pred,axis=1)[:,-4:]
+        return top_labels,probs
+    
     context = {'ques':ques}
     if(request.method == 'POST'):
+
         data = request.POST
         for i in ques:
             temp = data.get(str(i[0]))
@@ -289,7 +303,19 @@ def quest(request):
                 Response.append(True)
             else:
                 Response.append(False)
-        for i in range(80):
-            Responses[i] = Response[i]
-        return redirect('home')
+        top_label ,probs= predictions()
+        list_new = list(top_label.flatten())
+        print(probs)
+        print(list_new)
+        top=[]
+        for i in list_new:
+            top.append(ds[i])
+        print(top)
+        global_probs=probs
+        global_tops=top_label
+        return redirect('recommendation')
     return render(request, 'question.html',context)
+
+def recom(request):
+    context = {'probs':global_probs,'tops':global_tops}
+    return render(request, 'recommendation.html',context)
