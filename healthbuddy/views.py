@@ -189,3 +189,103 @@ def resetpasswd(request):
 def logout_u(request):
     logout(request)
     return redirect('home')
+
+ques = [
+        [1, 'itching'],
+    [2, 'skin_rash'],
+    [3, 'continuous_sneezing'],
+    [4, 'shivering'],
+    [5, 'chills'],
+    [6, 'joint_pain'],
+    [7, 'stomach_pain'],
+    [8, 'acidity'],
+    [9, 'vomiting'],
+    [10, 'burning_micturition'],
+    [11, 'fatigue'],
+    [12, 'cold_hands_and_feets'],
+    [13, 'mood_swings'],
+    [14, 'weight_loss'],
+    [15, 'restlessness'],
+    [16, 'lethargy'],
+    [17, 'cough'],
+    [18, 'high_fever'],
+    [19, 'sunken_eyes'],
+    [20, 'breathlessness'],
+    [21, 'sweating'],
+    [22, 'indigestion'],
+    [23, 'headache'],
+    [24, 'yellowish_skin'],
+    [25, 'dark_urine'],
+    [26, 'nausea'],
+    [27, 'loss_of_appetite'],
+    [28, 'back_pain'],
+    [29, 'constipation'],
+    [30, 'abdominal_pain'],
+    [31, 'diarrhoea'],
+    [32, 'mild_fever'],
+    [33, 'yellowing_of_eyes'],
+    [34, 'acute_liver_failure'],
+    [35, 'swelled_lymph_nodes'],
+    [36, 'malaise'],
+    [37, 'blurred_and_distorted_vision'],
+    [38, 'phlegm'],
+    [39, 'throat_irritation'],
+    [40, 'redness_of_eyes'],
+    [41, 'sinus_pressure'],
+    [42, 'chest_pain'],
+    [43, 'fast_heart_rate'],
+    [44, 'pain_during_bowel_movements'],
+    [45, 'neck_pain'],
+    [46, 'dizziness'],
+    [47, 'obesity'],
+    [48, 'puffy_face_and_eyes'],
+    [49, 'enlarged_thyroid'],
+    [50, 'swollen_extremities'],
+    [51, 'excessive_hunger'],
+    [52, 'drying_and_tingling_lips'],
+    [53, 'slurred_speech'],
+    [54, 'muscle_weakness'],
+    [55, 'stiff_neck'],
+    [56, 'swelling_joints'],
+    [57, 'loss_of_balance'],
+    [58, 'loss_of_smell'],
+    [59, 'foul_smell_of_urine'],
+    [60, 'passage_of_gases'],
+    [61, 'internal_itching'],
+    [62, 'toxic_look_(typhos)'],
+    [63, 'depression'],
+    [64, 'irritability'],
+    [65, 'muscle_pain'],
+    [66, 'red_spots_over_body'],
+    [67, 'abnormal_menstruation'],
+    [68, 'watering_from_eyes'],
+    [69, 'increased_appetite'],
+    [70, 'family_history'],
+    [71, 'visual_disturbances'],
+    [72, 'receiving_blood_transfusion'],
+    [73, 'receiving_unsterile_injections'],
+    [74, 'stomach_bleeding'],
+    [75, 'history_of_alcohol_consumption'],
+    [76, 'blood_in_sputum'],
+    [77, 'palpitations'],
+    [78, 'painful_walking'],
+    [79, 'scurring'],
+    [80, 'blister'],
+]
+
+
+#print(ques[::][0])
+
+def quest(request):
+    Response = []
+    context = {'ques':ques}
+    if(request.method == 'POST'):
+        data = request.POST
+        for i in ques:
+            temp = data.get(str(i[0]))
+            if temp == 'True':
+                Response.append(True)
+            else:
+                Response.append(False)
+        return redirect('home')
+    return render(request, 'question.html',context)
