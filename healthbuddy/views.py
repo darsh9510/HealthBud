@@ -34,7 +34,10 @@ headers = {
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     room = Rooms.objects.filter(Q(name__icontains=q)|Q(disease__name__icontains=q))
-    room_u = Rooms.objects.filter(host=request.user.id)
+    if request.user.is_authenticated:
+        room_u = Rooms.objects.filter(participent=request.user)
+    else:
+        room_u = Rooms.objects.none()
     context = {'room':room,'count':room.count(),'q':q,'room_u':room_u}
 
     return render(request, 'home.html', context)
@@ -102,7 +105,7 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('signin.html')
+            return redirect('signin')
     else:
         form = UserCreationForm()
 
@@ -115,11 +118,12 @@ def room(request, pk):
     user = User.objects.all()
     room_u = Rooms.objects.filter(host=request.user.id)
     messages = Massage.objects.filter(room=room)
-    context = {'room': room, 'messages': messages,'a_user':user,'room_u':room_u}
+    user_is_in_room = request.user in room.participent.all()
+    context = {'room': room, 'messages': messages,'a_user':user,'room_u':room_u,'user_is_in_room':user_is_in_room}
 
     if request.method == 'POST':
-        if 'participant_username' in request.POST:
-            participant_username = request.POST.get('participant_username')
+        if 'join' in request.POST:
+            participant_username = request.user.username
             try:
                 participant = User.objects.get(username=participant_username)
                 room.participent.add(participant)
@@ -315,10 +319,36 @@ def quest(request):
             top.append(ds[i])
         print(top)
         global_probs=probs
-        global_tops=top_label
+        global_tops=top
         return redirect('recommendation')
     return render(request, 'question.html',context)
 
 def recom(request):
-    context = {'probs':global_probs,'tops':global_tops}
+    chatrooms = []
+    print(global_tops)
+    try:
+        # Assuming global_tops is a list of strings containing disease names
+        for disease_name in global_tops:
+            # Query the Disease model to get the object with the matching name
+            disease = Disease.objects.get(name=disease_name)
+            
+            # Now you have the Disease object, you can perform any operations you need
+            # For example, printing the name or accessing other attributes
+            
+            # Printing the name of the disease
+            print(disease.name)
+            
+            # Now you can do whatever you want with the disease object
+            
+            # If you want to get related rooms for this disease, you can do something like:
+            room = Rooms.objects.get(disease=disease)
+            
+            # Assuming chatrooms is a list where you want to append the rooms
+            chatrooms.append(room)
+            
+    except Disease.DoesNotExist:
+        # Handle the case where the disease with the given name does not exist
+        print("Disease with the given name does not exist")
+
+    context = {'probs':global_probs,'tops':global_tops,'room':chatrooms}
     return render(request, 'recommendation.html',context)
