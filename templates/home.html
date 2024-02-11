@@ -104,17 +104,29 @@
 <body>
     <!-- Navbar -->
     <div class="navbar">
+        {%if request.user.is_authenticated%}
         <div class="flex items-center">
             <span class="text-lg font-bold font usern">{{request.user}}</span>
         </div>
+        {%else%}
+        <div class="flex items-center">
+            <span class="text-lg font-bold font usern">HealthBuddy</span>
+        </div>
+        {%endif%}
         <div class="flex items-center">
         <form method="GET" action="{%url 'home'%}">
             {%csrf_token%}
             <input type="text" name = "q" placeholder="Search" class="search"> 
         </form>
+            <a href="{%url 'question'%}" class="px-4 py-2 bg-blue-500 text-white rounded-lg features">Quiz</a>
             <a href="" class="px-4 py-2 bg-blue-500 text-white rounded-lg features">Home</a>
             <a href="{%url 'createRoom'%}" class="px-4 py-2 bg-blue-500 text-white rounded-lg features">Create Room</a>
-            <a href="{%url 'logout'%}" class="px-4 py-2 bg-red-500 text-white rounded-lg">Signout</a>
+            {%if request.user.is_authenticated%}
+            <a href="{%url 'logout'%}" class="px-4 py-2 bg-red-500 text-white rounded-lg">logout</a>
+            {%else%}
+            <a href="{%url 'signin'%}" class="px-4 py-2 bg-red-500 text-white rounded-lg">Sign In</a>
+            <a href="{%url 'sign_as_doctor'%}" class="px-4 py-2 bg-red-500 text-white rounded-lg">Sign-in As Doctor</a>
+            {%endif%}
         </div>
     </div>
 

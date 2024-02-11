@@ -1,19 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
 {%if page == 'signin'%}
-<div>
-    <form method="POST" action="">
+<body class="bg-gray-100">
+  <nav class="flex items-center justify-between bg-blue-500 p-4">
+    <div class="flex items-center">
+      <span class="text-lg font-bold text-white">Health Buddy</span>
+    </div>
+  </nav>
+  <div class="flex justify-center items-center h-screen">
+    <div class="bg-white p-8 rounded shadow-md w-96">
+      <h2 class="text-2xl font-bold mb-4">Login</h2>
+      <form method="post" action="">
         {%csrf_token%}
-        <label>Username:</label>
-        <input type="text" name="username" placeholder="Enter Username"/>
-        <label>Password</label>
-        <input type="password" name="password" placeholder="Enter Username"/>
-        <input type="submit" value="Login"/>
-    </form>
-    <p>havent signed up yet?</p>
-    <a href = "{%url 'signup' %}">Sign up</a>
-</div>
+        <div class="mb-4">
+          <label for="username" name="username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+          <input type="text" id="username" name="username" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500" required>
+        </div>
+        <div class="mb-4">
+          <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+          <input type="password" id="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500" required>
+        </div>
+        <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Login</button>
+        <hr>
+        <a href="{% url 'signup' %}" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 block text-center">Sign Up?</a>
+      </form>
+    </div>
+  </div>
+</body>
 {%else%}
-<div>
-    {{form.as_p}}
-</div>
+
+  <nav class="flex items-center justify-between bg-blue-500 p-4">
+    <div class="flex items-center">
+      <span class="text-lg font-bold text-white">HealthBuddy</span>
+    </div>
+  </nav>
+  <div class="flex justify-center items-center min-h-screen">
+    <div class="bg-white p-8 rounded shadow-md w-96">
+      <h2 class="text-2xl font-bold mb-4">Sign Up</h2>
+      <form method="post" action="">
+        {%csrf_token%}
+      {{form.as_p}}  
+      <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Sign Up</button>
+        <a href="{% url 'signin' %}" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 block text-center">Log In?</a>
+      
+      </form>
+    </div>
+  </div>
 
 {%endif%}
+
+
+</html>
+

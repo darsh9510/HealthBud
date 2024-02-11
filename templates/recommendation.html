@@ -93,23 +93,11 @@
     </header>
 
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-4">Potential Diseases</h1>
+        <h1 class="text-3xl font-bold mb-4">Potential Diseases Risk</h1>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {%for i in top_label%}
+            {%for i in tops %}
                 <div class="disease-card">
                     <h2 class="text-xl font-bold mb-2">{{i}}</h2>
-                </div>
-            {%endfor%}
-        </div>
-
-        <div style="margin-top: 2rem;"></div> <!-- Added space between the sections -->
-
-        <h1 class="text-3xl font-bold mb-4">Recommended Chatrooms</h1>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {%for i in room%}
-                <div class="disease-card">
-                    <h2 class="text-xl font-bold mb-2">{{i.name}}</h2>
-                    <p class="text-gray-600">{{i.disease}}</p>
                 </div>
             {%endfor%}
         </div>

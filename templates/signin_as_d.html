@@ -1,35 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Sign-in</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <title>Signup</title>
 </head>
-<body>
-    <h1>Doctor Sign-in</h1>
-    <form method="post">
-        {% csrf_token %}
-        <label for="doctor_name">Doctor Name:</label><br>
-        <input type="text" id="doctor_name" name="doctor_name" required><br>
-        
-        <label for="registration_no">Registration Number:</label><br>
-        <input type="text" id="registration_no" name="registration_no" required><br>
-        
-        <label for="registration_year">Registration Year:</label><br>
-        <input type="text" id="registration_year" name="registration_year" required><br>
-        
-        <label for="state_medical_council">State Medical Council:</label><br>
-        <input type="text" id="state_medical_council" name="state_medical_council" required><br>
-        
-        <label for="disease">Disease</label><br>
-        <input type="text" id="disease" name="disease" required><br>
-        
-        <label for="password">Password</label><br>
-        <input type="password" id="password" name="password" required><br>
 
-
-        
-        <button type="submit">Submit</button>
-    </form>
+<body class="bg-gray-100">
+  <nav class="flex items-center justify-between bg-blue-500 p-4">
+    <div class="flex items-center">
+      <span class="text-lg font-bold text-white">HealthBuddy</span>
+    </div>
+    <div class="flex items-center">
+      <input type="text" placeholder="Search" class="px-2 py-1 border search border-gray-300 rounded-lg mr-2">
+      <a href="#" class="px-4 py-2 bg-blue-500 text-white rounded-lg mr-2">Home</a>
+      <a href="#" class="px-4 py-2 bg-red-500 text-white rounded-lg">Signout</a>
+    </div>
+  </nav>
+  <div class="flex justify-center items-center min-h-screen">
+    <div class="bg-white p-8 rounded shadow-md w-96">
+      <h2 class="text-2xl font-bold mb-4">Enter Doctor Details</h2>
+      <form action="" method="post">
+        {%csrf_token%}
+        <div class="mb-4">
+          <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Doctor Name</label>
+          <input type="text" id="doctor_name" name="doctor_name"  class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div class="mb-4">
+          <label for="no" class="block text-gray-700 text-sm font-bold mb-2">Registration Number</label>
+          <input type="text" id="registration_no" name="registration_no"  class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div class="mb-4">
+          <label for="Year" class="block text-gray-700 text-sm font-bold mb-2">Registration Year</label>
+          <input ype="text" id="registration_year" name="registration_year" class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div class="mb-4">
+          <label for="state_mediCAL_council" class="block text-gray-700 text-sm font-bold mb-2">State Medical Council</label>
+          <input type="text" id="state_medical_council" name="state_medical_council" class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div class="mb-4">
+            <label for="confirm-password" class="block text-gray-700 text-sm font-bold mb-2"> Password</label>
+            <input type="password" id="password" name="password"  class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+          </div>
+          <div class="mb-4">
+            <label for="disease_m" class="block text-gray-700 text-sm font-bold mb-2">Disease expertise</label>
+            <input type="text" id="disease" name="disease" class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+          </div>
+        <button type="submit" class="bg-blue-500 text-white rounded px-4 py-2 w-full font-bold">Enter</button>
+      </form>
+    </div>
+  </div>
 </body>
+
 </html>
