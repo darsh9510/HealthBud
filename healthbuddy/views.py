@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages 
-# Create your views here.
 from .models import Rooms, Disease, Massage,Doctor
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
@@ -13,11 +12,9 @@ from .forms import RoomForm
 import requests
 import dill
 import numpy as np
-# Define the base URL
 URL = "https://ap-south-1.aws.neurelo.com/"
 base_url = URL + "custom/auth"
 
-# Set the query parameters
 query_params = {
     "doctor_name": "",
     "registration_no": "",
@@ -25,12 +22,10 @@ query_params = {
     "state_medical_council": "\\"
 }
 
-# Define the headers
 headers = {
     "X-API-KEY": "neurelo_9wKFBp874Z5xFw6ZCfvhXUBh9Hd4NW9ZwiLJ7tCsik3n3sDPi8tNL1xbmK4rsM539IXn6dRbBr6dZ8rJuWLIQLUP4vx349mJYHvEB4FCBAoD7WIvBt6MkzUEB/cbpfJkS2OypqIq9h3yaMIeJPTr5eSA4/eGjFoLJtkBt2gtyG22h96Fgg/Kil97x4vyvXqH_x9Ond+P7bK85/+ElhF4/vc9pzj18mx9aPM9/32SuEUc="
 }
 
-# Make the GET request
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     room = Rooms.objects.filter(Q(name__icontains=q)|Q(disease__name__icontains=q))
@@ -39,7 +34,6 @@ def home(request):
     else:
         room_u = Rooms.objects.none()
     context = {'room':room,'count':room.count(),'q':q,'room_u':room_u}
-
     return render(request, 'home.html', context)
 
 def signin_as_d(request):
@@ -55,19 +49,13 @@ def signin_as_d(request):
         if u_exist:
             messages.info(request, 'User already exists')
             return redirect('sign_as_doctor')
-
-
-
+            
         query_params["doctor_name"] = doctor_name
         query_params["registration_no"] = registration_no
         query_params["registration_year"] = registration_year
         query_params["state_medical_council"] = state_medical_council
-        
         response = requests.get(base_url, params=query_params, headers=headers)
-
-    # Check if the request was successful (status code 200)
         if response.status_code == 200:
-            # Print the response content
             exists = Disease.objects.filter(name=disease_m).exists()
             if exists:
                 disease_m_obj = Disease.objects.get(name=disease_m)
@@ -78,7 +66,6 @@ def signin_as_d(request):
             doctor = Doctor.objects.create(doctor = user,registration_no= registration_no,registration_year = registration_year,state_medical_council = state_medical_council,disease = disease_m_obj)
             print(response.text)
         else:
-            # Print an error message
             print("Error:", response.status_code)
         return redirect('signin')
     return render(request, 'signin_as_d.html')
@@ -108,7 +95,6 @@ def signup(request):
             return redirect('signin')
     else:
         form = UserCreationForm()
-
     return render(request, 'signin.html', {'form': form})
 
 
@@ -284,7 +270,6 @@ ds=['Fungal infection', 'Allergy', 'GERD', 'Chronic cholestasis', 'Drug Reaction
 
 global_probs = [None]
 global_tops=[None]
-#print(ques[::][0])
 Response = []
 def quest(request):
     global global_probs
@@ -302,7 +287,6 @@ def quest(request):
     
     context = {'ques':ques}
     if(request.method == 'POST'):
-
         data = request.POST
         for i in ques:
             temp = data.get(str(i[0]))
@@ -327,28 +311,12 @@ def recom(request):
     chatrooms = []
     print(global_tops)
     try:
-        # Assuming global_tops is a list of strings containing disease names
         for disease_name in global_tops:
-            # Query the Disease model to get the object with the matching name
             disease = Disease.objects.get(name=disease_name)
-            
-            # Now you have the Disease object, you can perform any operations you need
-            # For example, printing the name or accessing other attributes
-            
-            # Printing the name of the disease
             print(disease.name)
-            
-            # Now you can do whatever you want with the disease object
-            
-            # If you want to get related rooms for this disease, you can do something like:
             room = Rooms.objects.get(disease=disease)
-            
-            # Assuming chatrooms is a list where you want to append the rooms
             chatrooms.append(room)
-            
     except Disease.DoesNotExist:
-        # Handle the case where the disease with the given name does not exist
         print("Disease with the given name does not exist")
-
     context = {'probs':global_probs,'tops':global_tops,'room':chatrooms}
     return render(request, 'recommendation.html',context)
